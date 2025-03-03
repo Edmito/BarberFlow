@@ -1,17 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const app = require('./app'); // Importe o app Express
+const db = require('./src/models');
+require('dotenv').config();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
-    res.send("BarberFlow API Rodando!");
+// Sincroniza os modelos com o banco de dados
+db.sequelize.sync({ force: false }).then(() => {
+  console.log('Tabelas sincronizadas com o banco de dados.');
+  app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+}).catch(err => {
+  console.error('Erro ao sincronizar o banco de dados:', err);
 });
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-const clienteRoutes = require("./src/routes/clienteRoutes");
-app.use("/clientes", clienteRoutes);
