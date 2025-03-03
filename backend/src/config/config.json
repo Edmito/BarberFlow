@@ -1,0 +1,35 @@
+{
+  "development": {
+    "username": "root",
+    "password": "",
+    "database": "db_barberflow",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4"
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "",
+    "database": "db_barberflow_test",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4"
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": "",
+    "database": "db_barberflow_prod",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4"
+    }
+  }
+}
