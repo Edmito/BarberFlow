@@ -7,6 +7,8 @@
     "test": "jest",
     "test:service": "jest --testPathPattern=src/tests/ServiceController.test.js",
     "test:auth": "jest --testPathPattern=src/tests/AuthController.test.js",
+    "test:appointment": "jest --testPathPattern=src/tests/AppointmentController.test.js",
+    "test:payment": "jest --testPathPattern=src/tests/PaymentController.test.js",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
