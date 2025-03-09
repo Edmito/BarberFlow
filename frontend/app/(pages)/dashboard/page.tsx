@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Bar,
   BarChart,
@@ -19,40 +20,35 @@ import {
   CardHeader,
   CardTitle,
 } from '@/app/_components/ui/card';
-import {
-  DollarSign,
-  CalendarCheck,
-  Users,
-  Scissors,
-  TrendingUp,
-} from 'lucide-react';
+import { DollarSign, CalendarCheck, Users, Scissors } from 'lucide-react';
 import Header from '@/app/_components/Header';
 
-const revenueData = [
-  { day: 'Seg', value: 750 },
-  { day: 'Ter', value: 1200 },
-  { day: 'Qua', value: 980 },
-  { day: 'Qui', value: 1500 },
-  { day: 'Sex', value: 1800 },
-  { day: 'Sáb', value: 2200 },
-];
-
-const servicesData = [
-  { name: 'Corte Fade', value: 40 },
-  { name: 'Barba', value: 25 },
-  { name: 'Corte Simples', value: 20 },
-  { name: 'Sobrancelha', value: 15 },
-];
-
-const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-];
+interface DashboardData {
+  revenueOfDay: number;
+  clientsAttended: number;
+  nextAppointment: {
+    client: string;
+    service: string;
+    time: string;
+  };
+  mostPopularService: string;
+  revenueData: { day: string; value: number }[];
+  servicesData: { name: string; value: number }[];
+}
 
 const DashboardPage = () => {
   const router = useRouter();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  const COLORS = [
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -61,10 +57,46 @@ const DashboardPage = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/dashboard');
+        setData(response.data);
+      } catch (err: any) {
+        setError(
+          err.response?.data?.message ||
+            'Erro ao carregar os dados do dashboard. Por favor, tente novamente.',
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // Atualiza a data/hora a cada segundo
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) {
+    return <p className="p-4">Carregando dados...</p>;
+  }
+
+  if (error) {
+    return <p className="p-4 text-red-500">{error}</p>;
+  }
+
   return (
     <div>
       <Header />
-
+      <div className="p-4">
+        <p className="text-2xl font-semibold text-right">
+          {currentTime.toLocaleString()}
+        </p>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
         {/* Receita do Dia */}
         <Card>
@@ -75,7 +107,9 @@ const DashboardPage = () => {
             <DollarSign className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">R$ 1.250,00</p>
+            <p className="text-2xl font-bold">
+              R$ {data?.revenueOfDay.toFixed(2)}
+            </p>
           </CardContent>
         </Card>
 
@@ -88,11 +122,11 @@ const DashboardPage = () => {
             <Users className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">18</p>
+            <p className="text-2xl font-bold">{data?.clientsAttended}</p>
           </CardContent>
         </Card>
 
-        {/* Próximos Agendamentos */}
+        {/* Próximo Agendamento */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">
@@ -101,12 +135,16 @@ const DashboardPage = () => {
             <CalendarCheck className="h-5 w-5 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <p className="text-lg font-semibold">João Silva - Corte Fade</p>
-            <p className="text-sm text-gray-500">Hoje às 15:30</p>
+            <p className="text-lg font-semibold">
+              {data?.nextAppointment.client} - {data?.nextAppointment.service}
+            </p>
+            <p className="text-sm text-gray-500">
+              {data?.nextAppointment.time}
+            </p>
           </CardContent>
         </Card>
 
-        {/* Serviços mais populares */}
+        {/* Serviço mais Popular */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">
@@ -115,18 +153,18 @@ const DashboardPage = () => {
             <Scissors className="h-5 w-5 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <p className="text-lg font-bold">Corte Fade & Barba</p>
+            <p className="text-lg font-bold">{data?.mostPopularService}</p>
           </CardContent>
         </Card>
 
         {/* Gráfico de Receita da Semana */}
         <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>Receita da Semana</CardTitle>
+            <CardTitle>Receita dos ultimos 7 dias</CardTitle>
           </CardHeader>
           <CardContent className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueData}>
+              <BarChart data={data?.revenueData || []}>
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
@@ -149,7 +187,7 @@ const DashboardPage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={servicesData}
+                  data={data?.servicesData || []}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
@@ -157,7 +195,7 @@ const DashboardPage = () => {
                   outerRadius={80}
                   label
                 >
-                  {servicesData.map((_, index) => (
+                  {data?.servicesData?.map((_, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}

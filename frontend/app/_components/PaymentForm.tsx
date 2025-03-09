@@ -176,8 +176,8 @@ const PaymentForm = ({ onSave }: PaymentFormProps) => {
               >
                 <option value="">Selecione uma forma de pagamento</option>
                 <option value="PIX">PIX</option>
-                <option value="cartão">Cartão</option>
-                <option value="dinheiro">Dinheiro</option>
+                <option value="CARTÃO">Cartão</option>
+                <option value="DINHEIRO">Dinheiro</option>
               </select>
             </div>
           </form>

@@ -42,7 +42,7 @@ const PaymentList = () => {
 
   return (
     <Table className="min-w-full divide-y divide-gray-200 mt-4">
-      <TableHeader className='bg-secondary'>
+      <TableHeader className="bg-secondary">
         <TableRow>
           <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
             Cliente
@@ -83,7 +83,8 @@ const PaymentList = () => {
               R$ {payment.valor}
             </TableCell>
             <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {payment.forma_pagamento}
+              {payment.forma_pagamento.charAt(0).toUpperCase() +
+                payment.forma_pagamento.slice(1).toLowerCase()}
             </TableCell>
           </TableRow>
         ))}
