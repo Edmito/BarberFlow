@@ -9,6 +9,7 @@
     "test:auth": "jest --testPathPattern=src/tests/AuthController.test.js",
     "test:appointment": "jest --testPathPattern=src/tests/AppointmentController.test.js",
     "test:payment": "jest --testPathPattern=src/tests/PaymentController.test.js",
+    "reset-db": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },

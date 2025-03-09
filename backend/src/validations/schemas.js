@@ -119,13 +119,13 @@ const paymentSchema = Joi.object({
     'any.empty': 'O valor não pode estar vazio.',
   }),
   forma_pagamento: Joi.string()
-    .valid('PIX', 'cartão', 'dinheiro')
+    .valid('PIX', 'CARTÃO', 'DINHEIRO')
     .required()
     .empty('')
     .messages({
       'string.empty': 'A forma de pagamento não pode estar vazia.',
       'any.only':
-        'A forma de pagamento deve ser "PIX", "cartão" ou "dinheiro".',
+        'A forma de pagamento deve ser "PIX", "CARTÃO" ou "DINHEIRO".',
       'any.required': 'A forma de pagamento é obrigatória.',
     }),
 });
