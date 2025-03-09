@@ -1,16 +1,20 @@
-'use strict';
+const bcrypt = require('bcrypt');
+
+('use strict');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     // Populando a tabela Users
+    const salt = bcrypt.genSaltSync(10);
+
     await queryInterface.bulkInsert(
       'Users',
       [
         {
           nome: 'Ed',
           email: 'ed@gg.com',
-          senha: '123456',
+          senha: bcrypt.hashSync('123456', salt),
           tipo: 'cliente',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -18,7 +22,7 @@ module.exports = {
         {
           nome: 'Funcionario 1',
           email: 'funcionario1@example.com',
-          senha: '123456',
+          senha: bcrypt.hashSync('123456', salt),
           tipo: 'funcionario',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -26,7 +30,7 @@ module.exports = {
         {
           nome: 'Diego',
           email: 'diego@gg.com',
-          senha: '123456',
+          senha: bcrypt.hashSync('123456', salt),
           tipo: 'cliente',
           createdAt: new Date(),
           updatedAt: new Date(),
