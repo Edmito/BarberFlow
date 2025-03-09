@@ -5,7 +5,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="px-6 py-3 flex items-center justify-between border-b">
+      <header className="px-12 py-3 flex items-center justify-between border-b">
         <div className="flex items-center gap-3">
           <Scissors className="h-6 w-6" />
           <span className="font-bold">Barbearia</span>

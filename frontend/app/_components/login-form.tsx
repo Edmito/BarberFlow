@@ -1,18 +1,73 @@
+'use client';
+
+import { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/app/_lib/utils';
 import { Button } from '@/app/_components/ui/button';
 import { Card, CardContent } from '@/app/_components/ui/card';
 import { Input } from '@/app/_components/ui/input';
 import { Label } from '@/app/_components/ui/label';
+import { Toaster } from '@/app/_components/ui/sonner';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/api/auth/login',
+        {
+          email,
+          senha,
+        },
+      );
+
+      // Handle successful response
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+      toast.success('Login bem-sucedido!');
+      console.log('Login successful:', response.data);
+
+      // Redirect to dashboard or another page
+      router.push('/dashboard');
+    } catch (error: any) {
+      // Handle error response
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else {
+        setError('Erro ao fazer login. Por favor, tente novamente.');
+        toast.error('Erro ao fazer login. Por favor, tente novamente.');
+      }
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <Toaster />
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
@@ -26,23 +81,32 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Senha</Label>
-                    <a
+                  <a
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
-                    >
+                  >
                     Esqueceu sua senha?
-                    </a>
+                  </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              {error && <p className="text-red-500 text-center">{error}</p>}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Entrando...' : 'Login'}
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -57,7 +121,7 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                    <span className="sr-only">Login com Apple</span>
+                  <span className="sr-only">Login com Apple</span>
                 </Button>
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -78,12 +142,12 @@ export function LoginForm({
                   <span className="sr-only">Login com Meta</span>
                 </Button>
               </div>
-                <div className="text-center text-sm">
+              <div className="text-center text-sm">
                 Não tem uma conta?{' '}
-                <a href="#" className="underline underline-offset-4">
+                <a href="/register" className="underline underline-offset-4">
                   Registre-se
                 </a>
-                </div>
+              </div>
             </div>
           </form>
           <div className="relative hidden bg-muted md:block">
@@ -96,8 +160,9 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        Ao clicar em continuar, você concorda com nossos <a href="#">Termos de Serviço</a>{' '}
-        e <a href="#">Política de Privacidade</a>.
+        Ao clicar em continuar, você concorda com nossos{' '}
+        <a href="#">Termos de Serviço</a> e{' '}
+        <a href="#">Política de Privacidade</a>.
       </div>
     </div>
   );
