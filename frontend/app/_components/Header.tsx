@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { MenuIcon, Scissors } from 'lucide-react';
-import { Sheet, SheetTrigger, SheetContent } from './ui/sheet';
+import { Sheet, SheetTrigger, SheetContent, SheetTitle } from './ui/sheet';
 
 import {
   NavigationMenu,
@@ -31,9 +31,9 @@ const Header = () => {
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <MenuIcon className="h-6 w-6" />
-              <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
+          <SheetTitle></SheetTitle>
           <SheetContent side="left">
             <Link href="/dashboard" prefetch={false}>
               <div className="flex items-center gap-3">
