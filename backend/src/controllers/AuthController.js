@@ -3,7 +3,7 @@ const { User } = require('../models');
 const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
-  const { nome, email, senha, tipo } = req.body;
+  const { nome, email, senha, telefone, tipo } = req.body;
 
   try {
     const existingUser = await User.findOne({ where: { email } });
@@ -14,6 +14,7 @@ const register = async (req, res) => {
       nome,
       email,
       senha,
+      telefone,
       tipo,
     });
 

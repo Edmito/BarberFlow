@@ -9,33 +9,40 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  User.init({
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      nome: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      senha: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      tipo: {
+        type: DataTypes.ENUM('cliente', 'funcionario'),
+        allowNull: false,
+      },
+      telefone: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
-    nome: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    {
+      sequelize,
+      modelName: 'User',
     },
-    email: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    senha: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    tipo: {
-      type: DataTypes.ENUM('cliente', 'funcionario'),
-      allowNull: false,
-    },
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  );
 
   User.beforeCreate(async (user) => {
     user.senha = await bcrypt.hash(user.senha, 10);

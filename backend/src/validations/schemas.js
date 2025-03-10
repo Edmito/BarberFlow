@@ -26,6 +26,38 @@ const userSchema = Joi.object({
       'any.only': 'O tipo deve ser "cliente" ou "funcionario".',
       'any.required': 'O tipo é obrigatório.',
     }),
+  telefone: Joi.string()
+    .pattern(/^\d{11}$/)
+    .optional()
+    .empty('')
+    .messages({
+      'string.pattern.base': 'O telefone deve ter exatamente 11 números.',
+    }),
+});
+
+const basicUserSchema = Joi.object({
+  id: Joi.number().required().empty('').messages({
+    'number.base': 'O ID deve ser um número.',
+    'any.required': 'O ID é obrigatório.',
+    'any.empty': 'O ID não pode estar vazio.',
+  }),
+  nome: Joi.string().min(2).required().empty('').messages({
+    'string.empty': 'O nome não pode estar vazio.',
+    'string.min': 'O nome deve ter pelo menos 2 caracteres.',
+    'any.required': 'O nome é obrigatório.',
+  }),
+  email: Joi.string().email().required().empty('').messages({
+    'string.empty': 'O e-mail não pode estar vazio.',
+    'string.email': 'O e-mail deve ser válido.',
+    'any.required': 'O e-mail é obrigatório.',
+  }),
+  telefone: Joi.string()
+    .pattern(/^\d{11}$/)
+    .optional()
+    .empty('')
+    .messages({
+      'string.pattern.base': 'O telefone deve ter exatamente 11 números.',
+    }),
 });
 
 // Esquema de validação para agendamentos
@@ -100,6 +132,7 @@ const paymentSchema = Joi.object({
 
 module.exports = {
   userSchema,
+  basicUserSchema,
   appointmentSchema,
   serviceSchema,
   paymentSchema,
