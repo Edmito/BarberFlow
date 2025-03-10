@@ -42,7 +42,7 @@ const PaymentList = () => {
 
   return (
     <Table className="min-w-full divide-y divide-gray-200 mt-4">
-      <TableHeader>
+      <TableHeader className='bg-secondary'>
         <TableRow>
           <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
             Cliente

@@ -91,16 +91,16 @@ const ServiceList = () => {
               <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
                 {service.duracao} minutos
               </TableCell>
-              <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <TableCell className="px-6 py-4 text-right space-x-2">
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   onClick={() => setEditingService(service)}
                 >
                   <Pencil className="h-5 w-5" />
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="default"
                   size="icon"
                   onClick={() => handleDelete(service.id)}
                 >
