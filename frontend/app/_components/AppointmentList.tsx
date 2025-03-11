@@ -110,7 +110,7 @@ const AppointmentList = () => {
           placeholder="Buscar por cliente"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-1/3 bg-secondary"
+          className="bg-secondary"
         />
       </div>
       <Table className="min-w-full divide-y divide-gray-200 mt-4">
@@ -161,7 +161,7 @@ const AppointmentList = () => {
                 </Button>
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <AlertDialog>
+                <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="icon">
                       <Trash className="h-5 w-5" />
@@ -171,8 +171,8 @@ const AppointmentList = () => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Deletar Agendamento</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Tem certeza que deseja deletar este Agendamento? Esta ação
-                        não pode ser desfeita.
+                        Tem certeza que deseja deletar este Agendamento? Esta
+                        ação não pode ser desfeita.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
