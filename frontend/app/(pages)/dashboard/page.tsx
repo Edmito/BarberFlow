@@ -89,14 +89,14 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-3 bg-background">
       <Header />
       <div className="mx-4">
         <p className="text-lg font-semibold text-right">
           {currentTime.toLocaleString()}
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-8 py-4 bg-foreground m-4 rounded-lg shadow-md">
         <Card>
           <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle className="text-sm font-medium">
