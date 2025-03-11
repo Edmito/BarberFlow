@@ -16,8 +16,7 @@ const PaymentsPage = () => {
     <div>
       <Header />
       <main className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Gerenciar Pagamentos</h1>
-        <PaymentForm onSave={handleSave} />
+        <h1 className="text-2xl font-bold mb-4">Pagamentos</h1>
         <PaymentList key={refresh.toString()} />
       </main>
     </div>

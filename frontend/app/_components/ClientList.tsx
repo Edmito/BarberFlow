@@ -45,17 +45,9 @@ const ClientList = () => {
     fetchClients();
   }, []);
 
-  const handleEdit = (client: Client) => {
-    setEditingUser(client);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingUser(null);
-  };
-
-  const handleUpdate = () => {
-    fetchClients();
-  };
+  const handleEdit = (client: Client) => setEditingUser(client);
+  const handleCloseEdit = () => setEditingUser(null);
+  const handleUpdate = () => fetchClients();
 
   const handleDelete = async (userId: string) => {
     try {
@@ -70,55 +62,56 @@ const ClientList = () => {
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;
     const phoneNumber = value.replace(/[^\d]/g, '');
-    const phoneNumberLength = phoneNumber.length;
-    if (phoneNumberLength < 3) return phoneNumber;
-    if (phoneNumberLength < 7) {
+    if (phoneNumber.length < 3) return phoneNumber;
+    if (phoneNumber.length < 7)
       return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2)}`;
-    }
-    return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2, 7)}-${phoneNumber.slice(7, 11)}`;
+    return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(
+      2,
+      7,
+    )}-${phoneNumber.slice(7, 11)}`;
   };
 
   return (
-    <div>
-      <Table className="min-w-full divide-y divide-gray-200 mt-4">
-        <TableHeader className='bg-secondary'>
+    <div className="overflow-x-auto">
+      <Table className="w-full border rounded-lg">
+        <TableHeader>
           <TableRow>
-            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
               Nome
             </TableHead>
-            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
               Email
             </TableHead>
-            <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
               Telefone
             </TableHead>
-            <TableHead className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
+            <TableHead className="px-4 py-2 text-right text-xs font-medium uppercase">
               Ações
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="divide-y divide-gray-200">
+        <TableBody>
           {clients.map((client) => (
             <TableRow key={client.id}>
-              <TableCell className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <TableCell className="px-4 py-2 text-sm font-medium whitespace-normal break-words">
                 {client.nome}
               </TableCell>
-              <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
                 {client.email}
               </TableCell>
-              <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {formatPhoneNumber(client.telefone)}
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                {formatPhoneNumber(client.telefone)}
               </TableCell>
-              <TableCell className="px-6 py-4 text-right space-x-2">
+              <TableCell className="px-4 py-2 text-right space-x-2">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="icon"
                   onClick={() => handleEdit(client)}
                 >
                   <Pencil className="h-5 w-5" />
                 </Button>
                 <Button
-                  variant="default"
+                  variant="destructive"
                   size="icon"
                   onClick={() => handleDelete(client.id)}
                 >

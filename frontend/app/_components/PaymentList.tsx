@@ -41,55 +41,57 @@ const PaymentList = () => {
   }, []);
 
   return (
-    <Table className="min-w-full divide-y divide-gray-200 mt-4">
-      <TableHeader className="bg-secondary">
-        <TableRow>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Cliente
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Funcionário
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Serviço
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Data e Hora
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Valor
-          </TableHead>
-          <TableHead className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-            Forma de Pagamento
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody className="divide-y divide-gray-200">
-        {payments.map((payment) => (
-          <TableRow key={payment.id}>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              {payment.Appointment.cliente.nome}
-            </TableCell>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {payment.Appointment.funcionario.nome}
-            </TableCell>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {payment.Appointment.Service.nome}
-            </TableCell>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {new Date(payment.Appointment.data_hora).toLocaleString()}
-            </TableCell>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              R$ {payment.valor}
-            </TableCell>
-            <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-              {payment.forma_pagamento.charAt(0).toUpperCase() +
-                payment.forma_pagamento.slice(1).toLowerCase()}
-            </TableCell>
+    <div className="overflow-x-auto">
+      <Table className="w-full border rounded-lg">
+        <TableHeader className="bg-secondary">
+          <TableRow>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Cliente
+            </TableHead>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Funcionário
+            </TableHead>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Serviço
+            </TableHead>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Data e Hora
+            </TableHead>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Valor
+            </TableHead>
+            <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
+              Forma de Pagamento
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody className="divide-y divide-gray-200">
+          {payments.map((payment) => (
+            <TableRow key={payment.id}>
+              <TableCell className="px-4 py-2 text-sm font-medium whitespace-normal break-words">
+                {payment.Appointment.cliente.nome}
+              </TableCell>
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                {payment.Appointment.funcionario.nome}
+              </TableCell>
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                {payment.Appointment.Service.nome}
+              </TableCell>
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                {new Date(payment.Appointment.data_hora).toLocaleString()}
+              </TableCell>
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                R$ {payment.valor}
+              </TableCell>
+              <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
+                {payment.forma_pagamento.charAt(0).toUpperCase() +
+                  payment.forma_pagamento.slice(1).toLowerCase()}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

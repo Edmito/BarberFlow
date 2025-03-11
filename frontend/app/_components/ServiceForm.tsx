@@ -41,25 +41,37 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ service, onSave }) => {
     setLoading(true);
 
     try {
+      let response;
       if (service) {
-        await axios.put(`http://localhost:5000/api/services/${service.id}`, {
-          nome,
-          preco,
-          duracao,
-        });
-        toast.success('Serviço atualizado com sucesso!');
+        response = await axios.put(
+          `http://localhost:5000/api/services/${service.id}`,
+          {
+            nome,
+            preco,
+            duracao,
+          }
+        );
       } else {
-        await axios.post('http://localhost:5000/api/services', {
+        response = await axios.post('http://localhost:5000/api/services', {
           nome,
           preco,
           duracao,
         });
-        toast.success('Serviço criado com sucesso!');
       }
+      toast.success(
+        response.data.message ||
+          (service
+            ? 'Serviço atualizado com sucesso!'
+            : 'Serviço criado com sucesso!')
+      );
       onSave();
       setIsDialogOpen(false);
     } catch (error) {
-      toast.error('Erro ao salvar serviço. Por favor, tente novamente.');
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Ocorreu um erro');
+      } else {
+        toast.error('Ocorrreu um erro');
+      }
     } finally {
       setLoading(false);
     }

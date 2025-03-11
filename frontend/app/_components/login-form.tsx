@@ -38,8 +38,7 @@ export function LoginForm({
       // Handle successful response
       const { token } = response.data;
       localStorage.setItem('token', token);
-      toast.success('Login bem-sucedido!');
-      console.log('Login successful:', response.data);
+      toast.success(response.data.message);
 
       // Redirect to dashboard or another page
       router.push('/dashboard');

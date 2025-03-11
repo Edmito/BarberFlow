@@ -100,7 +100,7 @@ const ServiceList = () => {
                   <Pencil className="h-5 w-5" />
                 </Button>
                 <Button
-                  variant="default"
+                  variant="destructive"
                   size="icon"
                   onClick={() => handleDelete(service.id)}
                 >

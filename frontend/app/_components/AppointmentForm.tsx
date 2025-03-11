@@ -93,17 +93,23 @@ const AppointmentForm = ({ onSave }: AppointmentFormProps) => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/api/appointments', {
-        cliente_id: clienteId,
-        funcionario_id: funcionarioId,
-        servico_id: servicoId,
-        data_hora: dataHora,
-      });
-      toast.success('Agendamento criado com sucesso!');
+      const response = await axios.post(
+        'http://localhost:5000/api/appointments',
+        {
+          cliente_id: clienteId,
+          funcionario_id: funcionarioId,
+          servico_id: servicoId,
+          data_hora: dataHora,
+        },
+      );
+      toast.success(response.data.message || 'Agendamento criado com sucesso!');
       onSave();
       setIsDialogOpen(false);
-    } catch (error) {
-      toast.error('Erro ao criar agendamento. Por favor, tente novamente.');
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        'Erro ao criar agendamento. Por favor, tente novamente.';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
