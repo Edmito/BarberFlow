@@ -32,11 +32,24 @@ interface Agendamento {
   data_hora: string;
 }
 
-const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProps) => {
+interface Payment {
+  id: number;
+  valor: number;
+  forma_pagamento: string;
+  agendamento_id: number;
+}
+
+const PaymentForm = ({
+  agendamentoId,
+  onSave,
+  isOpen,
+  onClose,
+}: PaymentFormProps) => {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [valor, setValor] = useState('');
   const [formaPagamento, setFormaPagamento] = useState('');
   const [loading, setLoading] = useState(false);
+  const [paymentExists, setPaymentExists] = useState(false);
 
   // Buscar os agendamentos da API
   useEffect(() => {
@@ -52,8 +65,6 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
             service: agendamento.Service, // Renomeando a chave para evitar problemas
           }),
         );
-
-        console.log('Agendamentos carregados:', agendamentosCorrigidos);
         setAgendamentos(agendamentosCorrigidos);
       } catch (error) {
         toast.error(
@@ -65,21 +76,46 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
     fetchAgendamentos();
   }, []);
 
+  // Verificar se o agendamento já possui um pagamento
+  useEffect(() => {
+    const checkPaymentExists = async () => {
+      if (!agendamentoId) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/payments/by?id=${agendamentoId}`,
+        );
+
+        if (response.data.payments.length > 0) {
+          const payment = response.data.payments[0];
+          setValor(payment.valor.toString());
+          setFormaPagamento(payment.forma_pagamento);
+          setPaymentExists(true);
+        } else {
+          setPaymentExists(false);
+        }
+      } catch (error: any) {
+        toast.error(
+          error.response?.data?.message || 'Erro ao verificar pagamento.',
+        );
+      }
+    };
+
+    checkPaymentExists();
+  }, [agendamentoId]);
+
   // Atualizar o valor automaticamente ao selecionar um agendamento
   useEffect(() => {
-    if (!agendamentos.length || !agendamentoId) return;
+    if (!agendamentos.length || !agendamentoId || paymentExists) return;
 
     const selectedAgendamento = agendamentos.find(
       (a) => a.id === agendamentoId,
     );
 
     if (selectedAgendamento) {
-      console.log('Agendamento selecionado:', selectedAgendamento);
-      console.log('Preço do serviço:', selectedAgendamento.service?.preco);
-
       setValor(selectedAgendamento.service?.preco?.toString() || '');
     }
-  }, [agendamentoId, agendamentos]);
+  }, [agendamentoId, agendamentos, paymentExists]);
 
   // Submeter o pagamento
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -111,9 +147,15 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Adicionar Novo Pagamento</AlertDialogTitle>
+          <AlertDialogTitle>
+            {paymentExists
+              ? 'Visualizar Pagamento'
+              : 'Adicionar Novo Pagamento'}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Preencha os campos abaixo para adicionar um novo pagamento.
+            {paymentExists
+              ? 'Os detalhes do pagamento são exibidos abaixo.'
+              : 'Preencha os campos abaixo para adicionar um novo pagamento.'}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -126,7 +168,7 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
               value={valor}
               onChange={(e) => setValor(e.target.value)}
               required
-              readOnly
+              readOnly={paymentExists}
             />
           </div>
 
@@ -138,6 +180,7 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
               onChange={(e) => setFormaPagamento(e.target.value)}
               required
               className="w-full p-2 border rounded"
+              disabled={paymentExists}
             >
               <option value="">Selecione uma forma de pagamento</option>
               <option value="PIX">PIX</option>
@@ -145,17 +188,28 @@ const PaymentForm = ({ agendamentoId, onSave, isOpen, onClose }: PaymentFormProp
               <option value="DINHEIRO">Dinheiro</option>
             </select>
           </div>
+
+          <div>
+            <Label>Status do Pagamento</Label>
+            <p
+              className={`font-bold ${
+                paymentExists ? 'text-green-500' : 'text-red-500'
+              }`}
+            >
+              {paymentExists ? 'Pago' : 'Pendente'}
+            </p>
+          </div>
         </form>
 
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>
-            Cancelar
-          </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button type="submit" form="payment-form" disabled={loading}>
-              {loading ? 'Salvando...' : 'Salvar'}
-            </Button>
-          </AlertDialogAction>
+          <AlertDialogCancel onClick={onClose}>Fechar</AlertDialogCancel>
+          {!paymentExists && (
+            <AlertDialogAction asChild>
+              <Button type="submit" form="payment-form" disabled={loading}>
+                {loading ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

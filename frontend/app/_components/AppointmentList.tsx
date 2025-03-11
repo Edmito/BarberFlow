@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/app/_components/ui/table';
 import PaymentForm from '@/app/_components/PaymentForm';
+import { Input } from '@/app/_components/ui/input';
 
 const AppointmentList = () => {
   interface Appointment {
@@ -25,18 +26,24 @@ const AppointmentList = () => {
   }
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<
+    Appointment[]
+  >([]);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     number | null
   >(null);
   const [isPaymentFormOpen, setIsPaymentFormOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(
         'http://localhost:5000/api/appointments',
       );
-      console.log(response.data.agendamentos);
       setAppointments(response.data.agendamentos);
+      setFilteredAppointments(response.data.agendamentos);
     } catch (error) {
       toast.error('Erro ao listar agendamentos. Por favor, tente novamente.');
     }
@@ -45,6 +52,16 @@ const AppointmentList = () => {
   useEffect(() => {
     fetchAppointments();
   }, []);
+
+  useEffect(() => {
+    const filtered = appointments.filter((appointment) =>
+      appointment.cliente?.nome
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
+    );
+    setFilteredAppointments(filtered);
+    setCurrentPage(1); // Reset to first page on search
+  }, [searchTerm, appointments]);
 
   const handleCancel = async (id: string | number) => {
     try {
@@ -61,8 +78,30 @@ const AppointmentList = () => {
     setIsPaymentFormOpen(true);
   };
 
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredAppointments.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
+
+  const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
+
   return (
     <div className="overflow-x-auto">
+      <div className="flex justify-between items-center mb-4">
+        <Input
+          type="text"
+          placeholder="Buscar por cliente"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-1/3 bg-secondary"
+        />
+      </div>
       <Table className="min-w-full divide-y divide-gray-200 mt-4">
         <TableHeader className="bg-secondary">
           <TableRow>
@@ -87,7 +126,7 @@ const AppointmentList = () => {
           </TableRow>
         </TableHeader>
         <TableBody className="divide-y divide-gray-200">
-          {appointments.map((appointment) => (
+          {currentItems.map((appointment) => (
             <TableRow key={appointment.id}>
               <TableCell className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 {appointment.cliente?.nome || 'N/A'}
@@ -123,6 +162,23 @@ const AppointmentList = () => {
           ))}
         </TableBody>
       </Table>
+
+      <div className="flex justify-between items-center mt-4">
+        <div>
+          Página {currentPage} de {totalPages}
+        </div>
+        <div className="flex space-x-2">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <Button
+              key={index}
+              variant={index + 1 === currentPage ? 'default' : 'outline'}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </Button>
+          ))}
+        </div>
+      </div>
 
       {selectedAppointmentId && (
         <PaymentForm
