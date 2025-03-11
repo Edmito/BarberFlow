@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/app/_components/ui/table';
+import { Badge } from './ui/badge';
 
 const PaymentList = () => {
   interface Payment {
@@ -84,8 +85,18 @@ const PaymentList = () => {
                 R$ {payment.valor}
               </TableCell>
               <TableCell className="px-4 py-2 text-sm whitespace-normal break-words">
-                {payment.forma_pagamento.charAt(0).toUpperCase() +
+                <Badge
+                  className={`w-24 ${
+                  payment.forma_pagamento === 'DINHEIRO'
+                    ? 'bg-foreground'
+                    : payment.forma_pagamento === 'CARTÃO'
+                    ? 'bg-blue-500'
+                    : 'bg-green-500'
+                  }`}
+                >
+                  {payment.forma_pagamento.charAt(0).toUpperCase() +
                   payment.forma_pagamento.slice(1).toLowerCase()}
+                </Badge>
               </TableCell>
             </TableRow>
           ))}

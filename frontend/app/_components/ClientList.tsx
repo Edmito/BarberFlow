@@ -83,7 +83,7 @@ const ClientList = () => {
     <div className="overflow-x-auto">
       <ClientForm onClientAdded={fetchClients} /> {/* Passamos a função aqui */}
       <Table className="w-full border rounded-lg">
-        <TableHeader>
+        <TableHeader className="bg-secondary">
           <TableRow>
             <TableHead className="px-4 py-2 text-left text-xs font-medium uppercase">
               Nome
