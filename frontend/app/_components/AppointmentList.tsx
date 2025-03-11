@@ -13,6 +13,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/app/_components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog';
 import PaymentForm from '@/app/_components/PaymentForm';
 import { Input } from '@/app/_components/ui/input';
 
@@ -150,13 +161,30 @@ const AppointmentList = () => {
                 </Button>
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleCancel(appointment.id)}
-                >
-                  <Trash className="h-5 w-5" />
-                </Button>
+              <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon">
+                      <Trash className="h-5 w-5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Deletar Agendamento</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja deletar este Agendamento? Esta ação
+                        não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleCancel(appointment.id)}
+                      >
+                        Deletar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}

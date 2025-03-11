@@ -15,6 +15,18 @@ import {
   TableRow,
 } from '@/app/_components/ui/table';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog';
+
 const ServiceList = () => {
   const [services, setServices] = useState<
     { id: string | number; nome: string; preco: number; duracao: number }[]
@@ -99,13 +111,30 @@ const ServiceList = () => {
                 >
                   <Pencil className="h-5 w-5" />
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDelete(service.id)}
-                >
-                  <Trash className="h-5 w-5" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="icon">
+                      <Trash className="h-5 w-5" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Deletar Serviço</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja deletar este Serviço? Esta ação
+                        não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDelete(service.id)}
+                      >
+                        Deletar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}
