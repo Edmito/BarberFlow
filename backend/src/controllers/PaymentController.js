@@ -50,4 +50,29 @@ const list = async (req, res) => {
   }
 };
 
-module.exports = { create, list };
+// Buscar pagamento por ID de agendamento
+const findByAppointmentId = async (req, res) => {
+  const { id } = req.query;
+  const agendamento_id = id;
+  try {
+    if (!agendamento_id) {
+      return res
+        .status(400)
+        .json({ message: 'ID do agendamento é necessário' });
+    }
+
+    const payments = await Payment.findAll({ where: { agendamento_id } });
+    if (payments.length === 0) {
+      return res.status(404).json({ message: 'Pagamento não encontrado' });
+    }
+
+    res.status(200).json({ payments });
+  } catch (error) {
+    console.error('Erro ao buscar pagamento:', error);
+    res
+      .status(500)
+      .json({ message: 'Erro ao buscar pagamento', error: error.message });
+  }
+};
+
+module.exports = { create, list, findByAppointmentId };
